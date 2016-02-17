@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
+
 public class PreferencesModel {
 
 	public String ListToString (List<String> data) {
@@ -60,6 +62,43 @@ public class PreferencesModel {
 		return webItems;
 	}
 	
+	static public DefaultListModel<String> initConfigFileNew (String configFile) {
 
+		DefaultListModel<String> webItems = new DefaultListModel<String>(); 
+		
+		try {
+			File file = new File(configFile);
+			if ( file != null )
+				file.createNewFile();
+			InputStream in = new FileInputStream(file);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+			
+			String line = reader.readLine();
+
+            while(line != null){
+            	webItems.addElement(line); 
+                line = reader.readLine();
+            }  
+            reader.close();
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return webItems;
+	}
 	
+	public List<String> DefaultListModelToArrayList (DefaultListModel<String> data) {
+		List<String> retData = new ArrayList<String>(); 
+
+		for (int i = 0; i < data.size(); i++) {
+			retData.add(data.elementAt(i));
+		}
+		return retData;
+	
+	}
 }

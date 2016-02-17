@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+
 import model.PreferencesModel;
 import view.PreferencesView;
 
@@ -25,7 +26,11 @@ public class PreferencesController {
 	}
 	
 	public void showView () {
-		_view.txtWebItems.setText(this.getWebItemsString());
+		// Urls in die JList einfügen
+		for (String _url: this._webItems) {
+			_view.lstWebItemModel.addElement(_url);
+		}
+		
 		_view.setVisible(true);
 	}
 	
@@ -34,9 +39,6 @@ public class PreferencesController {
 		return this._webItems;
 	}
 	
-	public String getWebItemsString () {
-		return _model.ListToString(this._webItems);
-	}
 	
 	public void setWebItems (List<String> data) {
 		this._webItems = data; 
@@ -74,15 +76,29 @@ public class PreferencesController {
 	
 	private void addListener(){
         this._view.setJButtonSave(new JButtonSaveListener());
+        this._view.setJButtonAddUrlListener(new JButtonAddUrlListener());
+        this._view.setJButtonDelUrlListener(new JButtonDelUrlListener());
     }
 	
 	class JButtonSaveListener implements ActionListener{
         public void actionPerformed(ActionEvent e) {
-        	String data = PreferencesController.this._view.txtWebItems.getText();
-        	List<String> webItems = PreferencesController.this._model.StringToList(data);
+        	List<String> webItems = _model.DefaultListModelToArrayList(_view.lstWebItemModel);
         	PreferencesController.this.setWebItems(webItems);
             PreferencesController.this.writeWebItems();
             PreferencesController.this._view.dispose();
         }
     }
+
+	class JButtonAddUrlListener implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+			_view.lstWebItemModel.addElement(_view.txtUrl.getText());
+		}
+	}
+	
+	class JButtonDelUrlListener implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+			_view.lstWebItemModel.remove(_view.lstWebItems.getSelectedIndex());
+		}
+	}
+	
 }
